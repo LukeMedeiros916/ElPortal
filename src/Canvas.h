@@ -26,6 +26,8 @@ public:
     void render();
 
     Shape* getSelectedShape(float mx, float my);
+
+    void eraseAt(float x, float y, float eraseRadius); // Added this line
 };
 
 #endif

@@ -1,5 +1,6 @@
 #include "Application.h"
 #include "Enums.h"
+#include <iostream> // Include necessary headers if missing
 
 using namespace bobcat;
 using namespace std;
@@ -7,39 +8,40 @@ using namespace std;
 void Application::onCanvasMouseDown(bobcat::Widget* sender, float mx, float my) {
     TOOL tool = toolbar->getTool();
     Color color = colorSelector->getColor();
+    float eraserSize = 0.05; // Define eraser size
 
     if (tool == PENCIL) {
         canvas->addPoint(mx, my, color.getR(), color.getG(), color.getB(), 7);
         canvas->redraw();
     }
     else if (tool == ERASER) {
-        canvas->addPoint(mx, my, 1.0, 1.0, 1.0, 14);
+        canvas->eraseAt(mx, my, eraserSize); // Call eraseAt
         canvas->redraw();
     }
     else if (tool == RECTANGLE) {
         canvas->addRectangle(mx, my, color.getR(), color.getG(), color.getB());
         canvas->redraw();
     }
-    else if (tool == CIRCLE) { 
+    else if (tool == CIRCLE) {
         canvas->addCircle(mx, my, color.getR(), color.getG(), color.getB());
         canvas->redraw();
     }
     else if (tool == MOUSE) {
         selectedShape = canvas->getSelectedShape(mx, my);
     }
-
 }
 
 void Application::onCanvasDrag(bobcat::Widget* sender, float mx, float my) {
     TOOL tool = toolbar->getTool();
     Color color = colorSelector->getColor();
+    float eraserSize = 0.05; // Define eraser size
 
     if (tool == PENCIL) {
         canvas->addPoint(mx, my, color.getR(), color.getG(), color.getB(), 7);
         canvas->redraw();
     }
     else if (tool == ERASER) {
-        canvas->addPoint(mx, my, 1.0, 1.0, 1.0, 14);
+        canvas->eraseAt(mx, my, eraserSize); // Call eraseAt
         canvas->redraw();
     }
 }
@@ -49,6 +51,7 @@ void Application::onToolbarChange(bobcat::Widget* sender) {
 
     if (action == CLEAR) {
         canvas->clear();
+        selectedShape = nullptr; // Also deselect shape on clear
         canvas->redraw();
     }
 }
@@ -84,3 +87,6 @@ Application::Application() {
 
     window->show();
 }
+
+// Destructor might be needed to delete allocated objects like window, toolbar, etc.
+// Application::~Application() { ... delete members ... }
