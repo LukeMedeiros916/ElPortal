@@ -5,7 +5,7 @@
 #include "Toolbar.h"
 #include "Canvas.h"
 #include "ColorSelector.h"
-#include "Scribble.h" // Include Scribble
+#include "Scribble.h"
 
 class Application : public bobcat::Application_ {
     bobcat::Window* window;
@@ -24,7 +24,10 @@ class Application : public bobcat::Application_ {
 public:
     Application();
 
-    friend struct::AppTest; // If needed for testing
+
+    friend struct::AppTest;
 };
 
-#endif 
+#endif
+
+// Working as of May 2

@@ -35,11 +35,13 @@ void Circle::draw() {
 bool Circle::contains(float mx, float my) {
     float dx = mx - x;
     float dy = my - y;
-    return (dx * dx + dy * dy) <= (radius * radius); // Updated implementation
+    return (dx * dx + dy * dy) <= (radius * radius);
 }
 
 void Circle::setColor(float r, float g, float b) {
-    this->r = r; // Added implementation
+    this->r = r;
     this->g = g;
     this->b = b;
 }
+
+// Working as of May 2

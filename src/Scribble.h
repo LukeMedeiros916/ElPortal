@@ -16,8 +16,10 @@ public:
     void addPoint(float x, float y);
 
     void draw() override;
-    bool contains(float mx, float my) override; // Check proximity to line segments
+    bool contains(float mx, float my) override;
     void setColor(float r, float g, float b) override;
 };
 
 #endif
+
+// Working as of May 2

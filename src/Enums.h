@@ -8,3 +8,5 @@ enum COLOR {RED, ORANGE, YELLOW, GREEN, BLUE, INDIGO, VIOLET};
 enum ACTION {NONE, CLEAR};
 
 #endif
+
+// Working as of May 2

@@ -44,3 +44,5 @@ void Rectangle::setColor(float r, float g, float b) {
     this->g = g;
     this->b = b;
 }
+
+// Working as of May 2

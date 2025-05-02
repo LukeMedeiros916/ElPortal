@@ -1,133 +1,147 @@
 #include "ColorSelector.h"
-using namespace bobcat;
+#include <FL/fl_draw.H>
+#include <FL/Fl.H>
+#include <cmath>
+#include <algorithm>
 
-void ColorSelector::deselectAllColors() {
-    redButton->label("");
-    orangeButton->label("");
-    yellowButton->label("");
-    greenButton->label("");
-    blueButton->label("");
-    indigoButton->label("");
-    violetButton->label("");
-}
 
-void ColorSelector::visualizeSelectedColor() {
-    if (color == RED) {
-        redButton->label("@+5square");
-    }
-    else if (color == ORANGE) {
-        orangeButton->label("@+5square");
-    }
-    else if (color == YELLOW) {
-        yellowButton->label("@+5square");
-    }
-    else if (color == GREEN) {
-        greenButton->label("@+5square");
-    }
-    else if (color == BLUE) {
-        blueButton->label("@+5square");
-    }
-    else if (color == INDIGO) {
-        indigoButton->label("@+5square");
-    }
-    else if (color == VIOLET) {
-        violetButton->label("@+5square");
+void ColorSelector::hsvToRgb(float h, float s, float v, float& r, float& g, float& b) {
+     r = v; g = v; b = v;
+     if (s > 0.0f) {
+        h *= 6.0f;
+        int i = static_cast<int>(floor(h));
+        float f = h - i;
+        float p = v * (1.0f - s);
+        float q = v * (1.0f - s * f);
+        float t = v * (1.0f - s * (1.0f - f));
+
+        switch (i % 6) {
+            case 0: r = v; g = t; b = p; break;
+            case 1: r = q; g = v; b = p; break;
+            case 2: r = p; g = v; b = t; break;
+            case 3: r = p; g = q; b = v; break;
+            case 4: r = t; g = p; b = v; break;
+            case 5: r = v; g = p; b = q; break;
+        }
     }
 }
 
-void ColorSelector::onClick(bobcat::Widget* sender) {
-    deselectAllColors();
-
-    if (sender == redButton) {
-        color = RED;
-    }
-    else if (sender == orangeButton) {
-        color = ORANGE;
-    }
-    else if (sender == yellowButton) {
-        color = YELLOW;
-    }
-    else if (sender == greenButton) {
-        color = GREEN;
-    }
-    else if (sender == blueButton) {
-        color = BLUE;
-    }
-    else if (sender == indigoButton) {
-        color = INDIGO;
-    }
-    else if (sender == violetButton) {
-        color = VIOLET;
-    }
-
-    if (onChangeCb) {
-        onChangeCb(this);
-    }
-
-    visualizeSelectedColor();
-    redraw();
+Color ColorSelector::getColorAtX(float localX) {
+    float saturation = 1.0f;
+    float value = 1.0f;
+    float hue = std::max(0.0f, std::min(1.0f, localX / (w() > 0 ? w() : 1)));
+    float r, g, b;
+    hsvToRgb(hue, saturation, value, r, g, b);
+    return Color(r, g, b);
 }
+
+
+
+ColorSelector::ColorSelector(int x, int y, int w, int h, const char* label)
+    : bobcat::Group(x, y, w, h, label) {
+    box(FL_FLAT_BOX);
+    selectorX = w / 2.0f;
+    selectedColor = getColorAtX(selectorX);
+    dragging = false;
+}
+
 
 Color ColorSelector::getColor() const {
-    if (color == RED) {
-        return Color(255/255.0, 0/255.0, 0/255.0);
-    }
-    else if (color == ORANGE) {
-        return Color(255/255.0, 127/255.0, 0/255.0);
-    }
-    else if (color == YELLOW) {
-        return Color(255/255.0, 255/255.0, 0/255.0);
-    }
-    else if (color == GREEN) {
-        return Color(0/255.0, 255/255.0, 0/255.0);
-    }
-    else if (color == BLUE) {
-        return Color(0/255.0, 0/255.0, 255/255.0);
-    }
-    else if (color == INDIGO) {
-        return Color(75/255.0, 0/255.0, 130/255.0);
-    }
-    else if (color == VIOLET) {
-        return Color(148/255.0, 0/255.0, 211/255.0);
-    }
-    else {
-        return Color();
-    }
+    return selectedColor;
 }
 
-ColorSelector::ColorSelector(int x, int y, int w, int h) : Group(x, y, w, h) {
-    redButton = new Button(x, y, 50, 50, "");
-    orangeButton = new Button(x + 50, y, 50, 50, "");
-    yellowButton = new Button(x + 100, y, 50, 50, "");
-    greenButton = new Button(x + 150, y, 50, 50, "");
-    blueButton = new Button(x + 200, y, 50, 50, "");
-    indigoButton = new Button(x + 250, y, 50, 50, "");
-    violetButton = new Button(x + 300, y, 50, 50, "");
 
-    color = RED;
+void ColorSelector::draw() {
 
-    redButton->color(fl_rgb_color(255, 0, 0));
-    redButton->labelcolor(FL_WHITE);
-    orangeButton->color(fl_rgb_color(255, 127, 0));
-    orangeButton->labelcolor(FL_WHITE);
-    yellowButton->color(fl_rgb_color(255, 255, 0));
-    yellowButton->labelcolor(FL_WHITE);
-    greenButton->color(fl_rgb_color(0, 255, 0));
-    greenButton->labelcolor(FL_WHITE);
-    blueButton->color(fl_rgb_color(0, 0, 255));
-    blueButton->labelcolor(FL_WHITE);
-    indigoButton->color(fl_rgb_color(75, 0, 130));
-    indigoButton->labelcolor(FL_WHITE);
-    violetButton->color(fl_rgb_color(148, 0, 211));
-    violetButton->labelcolor(FL_WHITE);
+    if (damage() & FL_DAMAGE_ALL) {
+        fl_push_clip(x(), y(), w(), h());
 
-    visualizeSelectedColor();
 
-    ON_CLICK(redButton, ColorSelector::onClick);
-    ON_CLICK(orangeButton, ColorSelector::onClick);
-    ON_CLICK(yellowButton, ColorSelector::onClick);
-    ON_CLICK(greenButton, ColorSelector::onClick);
-    ON_CLICK(blueButton, ColorSelector::onClick);
-    ON_CLICK(indigoButton, ColorSelector::onClick);
-    ON_CLICK(violetButton, ColorSelector::onClick);
+        for (int i = 0; i < w(); ++i) {
+            Color col = getColorAtX(static_cast<float>(i));
+            fl_color(fl_rgb_color(static_cast<uchar>(col.getR() * 255),
+                                 static_cast<uchar>(col.getG() * 255),
+                                 static_cast<uchar>(col.getB() * 255)));
+            fl_line(x() + i, y(), x() + i, y() + h() - 1);
+        }
+
+        fl_pop_clip();
+    }
+
+
+    fl_push_clip(x(), y(), w(), h());
+    int drawX = x() + static_cast<int>(selectorX);
+    int circleRadius = h() / 4;
+    int circleY = y() + h() / 2;
+
+
+    fl_color(FL_BLACK);
+    fl_arc(drawX - circleRadius, circleY - circleRadius, circleRadius * 2, circleRadius * 2, 0, 360);
+
+
+    Color scol = getColor();
+    fl_color(fl_rgb_color(static_cast<uchar>(scol.getR() * 255),
+                             static_cast<uchar>(scol.getG() * 255),
+                             static_cast<uchar>(scol.getB() * 255)));
+    fl_pie(drawX - circleRadius + 2, circleY - circleRadius + 2, (circleRadius - 2) * 2, (circleRadius - 2) * 2, 0, 360);
+
+
+    fl_pop_clip();
+
 }
+
+
+int ColorSelector::handle(int event) {
+    int result = 0;
+    float currentEventX = static_cast<float>(Fl::event_x());
+
+    switch (event) {
+        case FL_PUSH:
+            if (Fl::event_inside(this)) {
+                dragging = true;
+                selectorX = std::max(0.0f, std::min(static_cast<float>(w()), currentEventX - x()));
+                Color newColor = getColorAtX(selectorX);
+                if (newColor.getR() != selectedColor.getR() ||
+                    newColor.getG() != selectedColor.getG() ||
+                    newColor.getB() != selectedColor.getB())
+                {
+                    selectedColor = newColor;
+                    do_callback();
+                }
+                redraw();
+                result = 1;
+            }
+            break;
+
+        case FL_DRAG:
+            if (dragging) {
+                selectorX = std::max(0.0f, std::min(static_cast<float>(w()), currentEventX - x()));
+                 Color newColor = getColorAtX(selectorX);
+                 if (newColor.getR() != selectedColor.getR() ||
+                    newColor.getG() != selectedColor.getG() ||
+                    newColor.getB() != selectedColor.getB())
+                 {
+                    selectedColor = newColor;
+                    do_callback();
+                 }
+                redraw();
+                result = 1;
+            }
+            break;
+
+        case FL_RELEASE:
+            if (dragging) {
+                dragging = false;
+                result = 1;
+            }
+            break;
+
+
+        default:
+            result = bobcat::Group::handle(event);
+            break;
+    }
+    return result;
+}
+
+// Working as of May 2

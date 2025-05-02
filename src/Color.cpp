@@ -1,4 +1,5 @@
 #include "Color.h"
+#include <cmath>
 
 Color::Color() {
     r = 0.0;
@@ -23,3 +24,15 @@ float Color::getG() const {
 float Color::getB() const {
     return b;
 }
+
+void Color::setR(float r) {
+    this->r = r;
+}
+void Color::setG(float g) {
+    this->g = g;
+}
+void Color::setB(float b) {
+    this->b = b;
+}
+
+// Working as of May 2

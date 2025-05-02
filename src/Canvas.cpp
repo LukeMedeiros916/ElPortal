@@ -59,3 +59,5 @@ void Canvas::eraseAt(float x, float y, float eraseRadius) {
         }
     }
 }
+
+// Working as of May 2

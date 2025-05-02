@@ -18,3 +18,5 @@ float Point::getX() const {
 float Point::getY() const {
     return y;
 }
+
+// Working as of May 2
