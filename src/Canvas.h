@@ -5,7 +5,9 @@
 #include <vector>
 #include "Rectangle.h"
 #include "Circle.h"
-#include "Scribble.h" 
+#include "Scribble.h"
+#include "Triangle.h"
+#include "Polygon.h"
 #include "Shape.h"
 
 class Canvas : public bobcat::Canvas_ {
@@ -16,6 +18,8 @@ public:
 
     void addRectangle(float x, float y, float r, float g, float b);
     void addCircle(float x, float y, float r, float g, float b);
+    void addTriangle(float x, float y, float r, float g, float b);
+    void addPolygon(float x, float y, float r, float g, float b);
     void addShape(Shape* shape);
 
     void clear();
@@ -25,5 +29,3 @@ public:
 };
 
 #endif
-
-// Working as of May 2

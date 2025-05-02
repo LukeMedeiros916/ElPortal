@@ -34,6 +34,14 @@ void Application::onCanvasMouseDown(bobcat::Widget* sender, float mx, float my) 
         canvas->addCircle(mx, my, color.getR(), color.getG(), color.getB());
         canvas->redraw();
     }
+    else if (tool == TRIANGLE) {
+        canvas->addTriangle(mx, my, color.getR(), color.getG(), color.getB());
+        canvas->redraw();
+    }
+    else if (tool == POLYGON) {
+        canvas->addPolygon(mx, my, color.getR(), color.getG(), color.getB());
+        canvas->redraw();
+    }
     else if (tool == MOUSE) {
         selectedShape = canvas->getSelectedShape(mx, my);
 
@@ -121,5 +129,3 @@ Application::Application() {
 
     window->show();
 }
-
-// Working as of May 2
