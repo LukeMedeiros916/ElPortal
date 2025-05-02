@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "Enums.h"
-#include <iostream> // Include necessary headers if missing
+#include "Scribble.h"
+#include <iostream>
 
 using namespace bobcat;
 using namespace std;
@@ -8,14 +9,20 @@ using namespace std;
 void Application::onCanvasMouseDown(bobcat::Widget* sender, float mx, float my) {
     TOOL tool = toolbar->getTool();
     Color color = colorSelector->getColor();
-    float eraserSize = 0.05; // Define eraser size
+    float eraserSize = 0.05;
+    int pencilSize = 3;
+
+    selectedShape = nullptr;
+    currentScribble = nullptr;
 
     if (tool == PENCIL) {
-        canvas->addPoint(mx, my, color.getR(), color.getG(), color.getB(), 7);
+        currentScribble = new Scribble(color.getR(), color.getG(), color.getB(), pencilSize);
+        currentScribble->addPoint(mx, my);
+        canvas->addShape(currentScribble);
         canvas->redraw();
     }
     else if (tool == ERASER) {
-        canvas->eraseAt(mx, my, eraserSize); // Call eraseAt
+        canvas->eraseAt(mx, my, eraserSize);
         canvas->redraw();
     }
     else if (tool == RECTANGLE) {
@@ -33,16 +40,29 @@ void Application::onCanvasMouseDown(bobcat::Widget* sender, float mx, float my) 
 
 void Application::onCanvasDrag(bobcat::Widget* sender, float mx, float my) {
     TOOL tool = toolbar->getTool();
-    Color color = colorSelector->getColor();
-    float eraserSize = 0.05; // Define eraser size
+    float eraserSize = 0.05;
 
     if (tool == PENCIL) {
-        canvas->addPoint(mx, my, color.getR(), color.getG(), color.getB(), 7);
-        canvas->redraw();
+        if (currentScribble) { 
+            currentScribble->addPoint(mx, my);
+            canvas->redraw();
+        }
     }
     else if (tool == ERASER) {
-        canvas->eraseAt(mx, my, eraserSize); // Call eraseAt
+        canvas->eraseAt(mx, my, eraserSize);
         canvas->redraw();
+    }
+    
+}
+
+void Application::onCanvasMouseUp(bobcat::Widget* sender, float mx, float my) {
+    TOOL tool = toolbar->getTool();
+
+    if (tool == PENCIL) {
+        if (currentScribble) {
+            currentScribble = nullptr; // Finish the current scribble
+            canvas->redraw();
+        }
     }
 }
 
@@ -51,16 +71,19 @@ void Application::onToolbarChange(bobcat::Widget* sender) {
 
     if (action == CLEAR) {
         canvas->clear();
-        selectedShape = nullptr; // Also deselect shape on clear
+        selectedShape = nullptr;
+        currentScribble = nullptr;
         canvas->redraw();
     }
+    selectedShape = nullptr;
+    currentScribble = nullptr;
 }
 
 void Application::onColorSelectorChange(bobcat::Widget* sender) {
     Color color = colorSelector->getColor();
 
     if (selectedShape) {
-        cout << "Update selected shape color" << endl;
+        
         selectedShape->setColor(color.getR(), color.getG(), color.getB());
         canvas->redraw();
     }
@@ -70,6 +93,7 @@ Application::Application() {
     window = new Window(25, 75, 400, 400, "Lecture 21");
 
     selectedShape = nullptr;
+    currentScribble = nullptr;
 
     toolbar = new Toolbar(0, 0, 50, 400);
     canvas = new Canvas(50, 0, 350, 350);
@@ -82,11 +106,9 @@ Application::Application() {
 
     ON_MOUSE_DOWN(canvas, Application::onCanvasMouseDown);
     ON_DRAG(canvas, Application::onCanvasDrag);
+    ON_MOUSE_UP(canvas, Application::onCanvasMouseUp);
     ON_CHANGE(toolbar, Application::onToolbarChange);
     ON_CHANGE(colorSelector, Application::onColorSelectorChange);
 
     window->show();
 }
-
-// Destructor might be needed to delete allocated objects like window, toolbar, etc.
-// Application::~Application() { ... delete members ... }

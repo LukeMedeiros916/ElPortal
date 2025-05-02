@@ -1,0 +1,23 @@
+#ifndef SCRIBBLE_H
+#define SCRIBBLE_H
+
+#include "Shape.h"
+#include "Point.h"
+#include <vector>
+
+class Scribble : public Shape {
+    std::vector<Point> points;
+    float r, g, b;
+    int size;
+
+public:
+    Scribble(float r, float g, float b, int size);
+
+    void addPoint(float x, float y);
+
+    void draw() override;
+    bool contains(float mx, float my) override; // Check proximity to line segments
+    void setColor(float r, float g, float b) override;
+};
+
+#endif

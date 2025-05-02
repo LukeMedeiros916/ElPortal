@@ -5,6 +5,7 @@
 #include "Toolbar.h"
 #include "Canvas.h"
 #include "ColorSelector.h"
+#include "Scribble.h" // Include Scribble
 
 class Application : public bobcat::Application_ {
     bobcat::Window* window;
@@ -12,17 +13,18 @@ class Application : public bobcat::Application_ {
     Canvas* canvas;
     ColorSelector* colorSelector;
     Shape* selectedShape;
+    Scribble* currentScribble;
 
     void onCanvasMouseDown(bobcat::Widget* sender, float mx, float my);
     void onCanvasDrag(bobcat::Widget* sender, float mx, float my);
+    void onCanvasMouseUp(bobcat::Widget* sender, float mx, float my);
     void onToolbarChange(bobcat::Widget* sender);
     void onColorSelectorChange(bobcat::Widget* sender);
 
 public:
     Application();
 
-    friend struct::AppTest;
+    friend struct::AppTest; // If needed for testing
 };
 
-
-#endif
+#endif 
