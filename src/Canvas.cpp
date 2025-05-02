@@ -119,3 +119,5 @@ void Canvas::sendToBack(Shape* shape) {
 void Canvas::setHighlightedShape(Shape* shape) {
     highlightedShape = shape;
 }
+
+// Working as of May 3 | ALso beautified code

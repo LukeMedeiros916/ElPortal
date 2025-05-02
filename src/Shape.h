@@ -12,9 +12,13 @@ public:
     virtual bool contains(float mx, float my) = 0;
 
     virtual void setColor(float r, float g, float b) = 0;
+
+    virtual void resize(float factor) = 0;
+
     virtual ~Shape(){}
 };
 
 #endif
 
-// Working as of May 2
+
+// Working as of May 3 | ALso beautified code

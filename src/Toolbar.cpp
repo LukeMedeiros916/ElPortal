@@ -3,6 +3,7 @@
 #include <FL/fl_draw.H>
 
 using namespace bobcat;
+
 void Toolbar::deselectAllTools() {
     if (pencilButton) pencilButton->color(FL_BACKGROUND_COLOR);
     if (eraserButton) eraserButton->color(FL_BACKGROUND_COLOR);
@@ -14,31 +15,14 @@ void Toolbar::deselectAllTools() {
 }
 
 void Toolbar::visualizeSelectedTool() {
-    
-    if (tool == PENCIL && pencilButton) {
-        pencilButton->color(FL_WHITE);
-    }
-    else if (tool == ERASER && eraserButton) {
-        eraserButton->color(FL_WHITE);
-    }
-    else if (tool == CIRCLE && circleButton) {
-        circleButton->color(FL_WHITE);
-    }
-    else if (tool == TRIANGLE && triangleButton) {
-        triangleButton->color(FL_WHITE);
-    }
-    else if (tool == RECTANGLE && rectangleButton) {
-        rectangleButton->color(FL_WHITE);
-    }
-    else if (tool == POLYGON && polygonButton) {
-        polygonButton->color(FL_WHITE);
-    }
-    else if (tool == MOUSE && mouseButton) {
-        mouseButton->color(FL_WHITE);
-    }
-    
+    if (tool == PENCIL && pencilButton) pencilButton->color(FL_WHITE);
+    else if (tool == ERASER && eraserButton) eraserButton->color(FL_WHITE);
+    else if (tool == CIRCLE && circleButton) circleButton->color(FL_WHITE);
+    else if (tool == TRIANGLE && triangleButton) triangleButton->color(FL_WHITE);
+    else if (tool == RECTANGLE && rectangleButton) rectangleButton->color(FL_WHITE);
+    else if (tool == POLYGON && polygonButton) polygonButton->color(FL_WHITE);
+    else if (tool == MOUSE && mouseButton) mouseButton->color(FL_WHITE);
 }
-
 
 void Toolbar::onClick(bobcat::Widget* sender) {
     deselectAllTools();
@@ -62,31 +46,45 @@ void Toolbar::onClick(bobcat::Widget* sender) {
 }
 
 void Toolbar::onLayerOrderClick(bobcat::Widget* sender) {
-    if (sender == bringToFrontButton) {
-        action = BRING_FRONT;
-        std::cout << "Toolbar: Set action BRING_FRONT" << std::endl;
-    } else if (sender == sendToBackButton) {
-        action = SEND_BACK;
-        std::cout << "Toolbar: Set action SEND_BACK" << std::endl;
-    } else {
-        action = NONE;
-    }
+    if (sender == bringToFrontButton) action = BRING_FRONT;
+    else if (sender == sendToBackButton) action = SEND_BACK;
+    else action = NONE;
 
-    if (onChangeCb) {
-        onChangeCb(this);
-    }
+    if (action != NONE) std::cout << "Toolbar: Set action " << action << std::endl;
+    if (onChangeCb) { onChangeCb(this); }
 }
+
+void Toolbar::onZoomClick(bobcat::Widget* sender) {
+    if (sender == plusButton) action = ZOOM_IN;
+    else if (sender == minusButton) action = ZOOM_OUT;
+    else action = NONE;
+
+    if (action != NONE) std::cout << "Toolbar: Set action " << action << std::endl;
+    if (onChangeCb) { onChangeCb(this); }
+}
+
 
 TOOL Toolbar::getTool() const { return tool; }
 ACTION Toolbar::getAction() const { return action; }
 
+void Toolbar::resetAction() {
+    if (action == BRING_FRONT || action == SEND_BACK || action == CLEAR ||
+        action == ZOOM_IN || action == ZOOM_OUT)
+    {
+         std::cout << "Toolbar: Resetting action" << std::endl;
+         action = NONE;
+    }
+}
+
+
 Toolbar::Toolbar(int x_pos, int y_pos, int w, int h, bool createDefaultButtons /*= true*/)
     : Group(x_pos, y_pos, w, h)
 {
+    
     pencilButton = nullptr; eraserButton = nullptr; circleButton = nullptr;
     triangleButton = nullptr; rectangleButton = nullptr; polygonButton = nullptr;
     clearButton = nullptr; mouseButton = nullptr; bringToFrontButton = nullptr;
-    sendToBackButton = nullptr;
+    sendToBackButton = nullptr; plusButton = nullptr; minusButton = nullptr;
 
     tool = PENCIL;
     action = NONE;
@@ -107,7 +105,6 @@ Toolbar::Toolbar(int x_pos, int y_pos, int w, int h, bool createDefaultButtons /
         clearButton->box(FL_BORDER_BOX); mouseButton->box(FL_BORDER_BOX);
 
         visualizeSelectedTool();
-
         ON_CLICK(pencilButton, Toolbar::onClick); ON_CLICK(eraserButton, Toolbar::onClick);
         ON_CLICK(circleButton, Toolbar::onClick); ON_CLICK(triangleButton, Toolbar::onClick);
         ON_CLICK(rectangleButton, Toolbar::onClick); ON_CLICK(polygonButton, Toolbar::onClick);
@@ -115,27 +112,22 @@ Toolbar::Toolbar(int x_pos, int y_pos, int w, int h, bool createDefaultButtons /
 
     } else {
         box(FL_FLAT_BOX);
-        
         color(fl_rgb_color(200, 200, 200));
 
         bringToFrontButton = new Image(x_pos, y_pos, 50, 50, "./assets/bring-to-front.png");
         sendToBackButton = new Image(x_pos, y_pos + 50, 50, 50, "./assets/send-to-back.png");
-
         bringToFrontButton->box(FL_BORDER_BOX);
         sendToBackButton->box(FL_BORDER_BOX);
-
         ON_CLICK(bringToFrontButton, Toolbar::onLayerOrderClick);
         ON_CLICK(sendToBackButton, Toolbar::onLayerOrderClick);
-    }
-   
-}
 
-
-void Toolbar::resetAction() {
-    if (action == BRING_FRONT || action == SEND_BACK || action == CLEAR) {
-         std::cout << "Toolbar: Resetting action" << std::endl;
-         action = NONE;
+        plusButton = new Image(x_pos, y_pos + 100, 50, 50, "./assets/plus.png");
+        minusButton = new Image(x_pos, y_pos + 150, 50, 50, "./assets/minus.png");
+        plusButton->box(FL_BORDER_BOX);
+        minusButton->box(FL_BORDER_BOX);
+        ON_CLICK(plusButton, Toolbar::onZoomClick);
+        ON_CLICK(minusButton, Toolbar::onZoomClick);
     }
 }
 
-// Working as of May 2
+// Working as of May 3 | ALso beautified code

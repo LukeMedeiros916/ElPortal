@@ -1,6 +1,7 @@
 #include "Application.h"
 #include "Enums.h"
 #include "Scribble.h"
+#include "Shape.h"
 #include <iostream>
 
 using namespace bobcat;
@@ -13,12 +14,17 @@ void Application::onCanvasMouseDown(bobcat::Widget* sender, float mx, float my) 
     float eraserSize = 0.05;
     int pencilSize = 3;
 
+    
     if (currentTool != MOUSE) {
-         selectedShape = nullptr;
-         canvas->setHighlightedShape(nullptr);
+         if (selectedShape) {
+             selectedShape = nullptr;
+             canvas->setHighlightedShape(nullptr);
+             
+         }
     }
     currentScribble = nullptr;
 
+    
     if (currentTool == PENCIL) {
         currentScribble = new Scribble(color.getR(), color.getG(), color.getB(), pencilSize);
         currentScribble->addPoint(mx, my);
@@ -39,8 +45,12 @@ void Application::onCanvasMouseDown(bobcat::Widget* sender, float mx, float my) 
     } else if (currentTool == POLYGON) {
         canvas->addPolygon(mx, my, color.getR(), color.getG(), color.getB());
     } else if (currentTool == MOUSE) {
-        selectedShape = canvas->getShapeAt(mx, my);
-        canvas->setHighlightedShape(selectedShape);
+        Shape* newlySelected = canvas->getShapeAt(mx, my);
+        if (newlySelected != selectedShape) {
+            selectedShape = newlySelected;
+            canvas->setHighlightedShape(selectedShape);
+            canvas->redraw();
+        }
         if (selectedShape) {
              std::cout << "Application: Selected a shape." << std::endl;
         } else {
@@ -48,7 +58,9 @@ void Application::onCanvasMouseDown(bobcat::Widget* sender, float mx, float my) 
         }
     }
 
-    canvas->redraw();
+    if (currentTool != MOUSE) {
+        canvas->redraw();
+    }
 }
 
 void Application::onCanvasDrag(bobcat::Widget* sender, float mx, float my) {
@@ -85,24 +97,38 @@ void Application::onToolbarChange(bobcat::Widget* sender) {
     ACTION action = changedToolbar->getAction();
     TOOL tool = changedToolbar->getTool();
 
-    std::cout << "Application: Toolbar change detected. Action=" << action << ", Tool=" << tool << std::endl;
+    std::cout << "Application: Toolbar change detected. Action=" << action << std::endl;
 
     if (changedToolbar == rightToolbar) {
+        const float zoomInFactor = 1.1f;
+        const float zoomOutFactor = 1.0f / zoomInFactor;
+
         if (action == BRING_FRONT) {
             if (selectedShape) {
-                std::cout << "Application: Calling canvas->bringToFront" << std::endl;
                 canvas->bringToFront(selectedShape);
                 canvas->redraw();
-            } else {
-                 std::cout << "Application: Bring Front clicked but no shape selected." << std::endl;
             }
         } else if (action == SEND_BACK) {
             if (selectedShape) {
-                 std::cout << "Application: Calling canvas->sendToBack" << std::endl;
                 canvas->sendToBack(selectedShape);
                 canvas->redraw();
+            }
+        
+        } else if (action == ZOOM_IN) {
+            if (selectedShape) {
+                std::cout << "Application: Resizing shape larger." << std::endl;
+                selectedShape->resize(zoomInFactor);
+                canvas->redraw();
             } else {
-                 std::cout << "Application: Send Back clicked but no shape selected." << std::endl;
+                 std::cout << "Application: Zoom In clicked but no shape selected." << std::endl;
+            }
+        } else if (action == ZOOM_OUT) {
+            if (selectedShape) {
+                std::cout << "Application: Resizing shape smaller." << std::endl;
+                selectedShape->resize(zoomOutFactor);
+                canvas->redraw();
+            } else {
+                 std::cout << "Application: Zoom Out clicked but no shape selected." << std::endl;
             }
         }
         changedToolbar->resetAction();
@@ -137,6 +163,7 @@ void Application::onColorSelectorChange(bobcat::Widget* sender) {
     }
 }
 
+
 Application::Application() :
     window(nullptr), toolbar(nullptr), rightToolbar(nullptr),
     canvas(nullptr), colorSelector(nullptr),
@@ -146,7 +173,7 @@ Application::Application() :
     int windowWidth = leftToolbarWidth + canvasWidth + rightToolbarWidth;
     int windowHeight = 400; int colorSelectorHeight = 50;
     int canvasHeight = windowHeight - colorSelectorHeight;
-    window = new Window(25, 75, windowWidth, windowHeight, "ElPortal Drawing App");
+    window = new Window(25, 75, windowWidth, windowHeight, "El Portal Drawing App");
 
     toolbar = new Toolbar(0, 0, leftToolbarWidth, windowHeight, true);
     canvas = new Canvas(leftToolbarWidth, 0, canvasWidth, canvasHeight);
@@ -168,7 +195,8 @@ Application::Application() :
 }
 
 Application::~Application() {
-    
     delete window;
     std::cout << "Application destroyed." << std::endl;
 }
+
+// Working as of May 3 | ALso beautified code

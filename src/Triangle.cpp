@@ -1,17 +1,25 @@
 #include "Triangle.h"
 #include <GL/freeglut.h>
 #include <cmath>
+#include <algorithm>
 
 const float SQRT3 = 1.7320508f;
 
 void Triangle::calculateVertices() {
-    float half_base = size / SQRT3;
-    float height_part1 = size * (2.0f / 3.0f);
-    float height_part2 = size * (1.0f / 3.0f);
+    float height = size;
+    float half_base = height / SQRT3;
+    float vert_offset = height * (2.0f / 3.0f);
+    float base_offset = height * (1.0f / 3.0f);
 
-    v1x = x;           v1y = y + height_part1;
-    v2x = x - half_base; v2y = y - height_part2;
-    v3x = x + half_base; v3y = y - height_part2;
+    // Top vertex
+    v1x = x;
+    v1y = y + vert_offset;
+    // Bottom-left vertex
+    v2x = x - half_base;
+    v2y = y - base_offset;
+    // Bottom-right vertex
+    v3x = x + half_base;
+    v3y = y - base_offset;
 }
 
 Triangle::Triangle(float cx, float cy, float r_in, float g_in, float b_in) {
@@ -51,9 +59,16 @@ bool Triangle::contains(float mx, float my) {
     return !(has_neg && has_pos);
 }
 
-
 void Triangle::setColor(float r_in, float g_in, float b_in) {
     r = r_in;
     g = g_in;
     b = b_in;
 }
+
+void Triangle::resize(float factor) {
+    const float minSize = 0.01f;
+    size = std::max(minSize, size * factor);
+    calculateVertices();
+}
+
+// Working as of May 3 | ALso beautified code

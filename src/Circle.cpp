@@ -2,6 +2,8 @@
 #include <GL/freeglut.h>
 #include <GL/gl.h>
 #include <cmath>
+#include <algorithm>
+
 
 Circle::Circle() {
     x = 0.0;
@@ -24,11 +26,14 @@ Circle::Circle(float x, float y, float r, float g, float b) {
 void Circle::draw() {
     glColor3f(r, g, b);
 
-    float inc = M_PI / 32;
+    const int segments = 64;
+    const float angle_increment = 2.0f * M_PI / segments;
+
     glBegin(GL_POLYGON);
-        for (float theta = 0; theta <= 2 * M_PI; theta += inc){
-            glVertex2d(x + cos(theta) * radius, y + sin(theta) * radius);
-        }
+    for (int i = 0; i <= segments; ++i) {
+        float angle = i * angle_increment;
+        glVertex2f(x + cos(angle) * radius, y + sin(angle) * radius);
+    }
     glEnd();
 }
 
@@ -44,4 +49,9 @@ void Circle::setColor(float r, float g, float b) {
     this->b = b;
 }
 
-// Working as of May 2
+void Circle::resize(float factor) {
+    const float minRadius = 0.01f;
+    radius = std::max(minRadius, radius * factor);
+}
+
+// Working as of May 3 | ALso beautified code

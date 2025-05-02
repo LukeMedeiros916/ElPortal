@@ -15,11 +15,13 @@ class Rectangle : public Shape {
 public:
     Rectangle();
     Rectangle(float x, float y, float r, float g, float b);
-    void draw();
-    bool contains(float mx, float my);
-    void setColor(float r, float g, float b);
+
+    void draw() override;
+    bool contains(float mx, float my) override;
+    void setColor(float r, float g, float b) override;
+    void resize(float factor) override;
 };
 
 #endif
 
-// Working as of May 2
+// Working as of May 3 | ALso beautified code

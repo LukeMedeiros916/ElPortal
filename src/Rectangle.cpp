@@ -1,5 +1,6 @@
 #include "Rectangle.h"
 #include <GL/freeglut.h>
+#include <algorithm>
 
 Rectangle::Rectangle() {
     x = 0.0;
@@ -24,19 +25,25 @@ Rectangle::Rectangle(float x, float y, float r, float g, float b) {
 void Rectangle::draw() {
     glColor3f(r, g, b);
 
+    float half_width = width / 2.0f;
+    float half_height = height / 2.0f;
+
     glBegin(GL_POLYGON);
-        glVertex2f(x - width/2, y + height/2);
-        glVertex2f(x + width/2, y + height/2);
-        glVertex2f(x + width/2, y - height/2);
-        glVertex2f(x - width/2, y - height/2);
+        glVertex2f(x - half_width, y + half_height);
+        glVertex2f(x + half_width, y + half_height);
+        glVertex2f(x + half_width, y - half_height);
+        glVertex2f(x - half_width, y - half_height);
     glEnd();
 }
 
 bool Rectangle::contains(float mx, float my) {
-    if (mx >= x - width/2 && mx <= x + width/2 && my <= y + height/2 && my >= y - height/2) {
-        return true;
-    }
-    return false;
+    float half_width = width / 2.0f;
+    float half_height = height / 2.0f;
+
+    bool within_x = (mx >= x - half_width) && (mx <= x + half_width);
+    bool within_y = (my >= y - half_height) && (my <= y + half_height);
+
+    return within_x && within_y;
 }
 
 void Rectangle::setColor(float r, float g, float b) {
@@ -45,4 +52,10 @@ void Rectangle::setColor(float r, float g, float b) {
     this->b = b;
 }
 
-// Working as of May 2
+void Rectangle::resize(float factor) {
+    const float minDimension = 0.01f;
+    width = std::max(minDimension, width * factor);
+    height = std::max(minDimension, height * factor);
+}
+
+// Working as of May 3 | ALso beautified code

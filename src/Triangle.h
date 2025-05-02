@@ -9,8 +9,8 @@ class Triangle : public Shape {
     float r, g, b;
 
     float v1x, v1y, v2x, v2y, v3x, v3y;
-    void calculateVertices();
 
+    void calculateVertices();
     float sign(float p1x, float p1y, float p2x, float p2y, float p3x, float p3y);
 
 public:
@@ -19,6 +19,9 @@ public:
     void draw() override;
     bool contains(float mx, float my) override;
     void setColor(float r, float g, float b) override;
+    void resize(float factor) override;
 };
 
 #endif
+
+// Working as of May 3 | ALso beautified code

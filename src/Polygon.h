@@ -12,6 +12,7 @@ class Polygon : public Shape {
 
     std::vector<float> vertices_x;
     std::vector<float> vertices_y;
+
     void calculateVertices();
 
 public:
@@ -20,6 +21,9 @@ public:
     void draw() override;
     bool contains(float mx, float my) override;
     void setColor(float r, float g, float b) override;
+    void resize(float factor) override;
 };
 
 #endif
+
+// Working as of May 3 | ALso beautified code

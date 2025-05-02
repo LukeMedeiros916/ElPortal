@@ -35,4 +35,4 @@ void Color::setB(float b) {
     this->b = b;
 }
 
-// Working as of May 2
+// Working as of May 3 | ALso beautified code
