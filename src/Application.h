@@ -6,11 +6,13 @@
 #include "Canvas.h"
 #include "ColorSelector.h"
 #include "Scribble.h"
+#include "Shape.h"
 
 
 class Application : public bobcat::Application_ {
     bobcat::Window* window;
     Toolbar* toolbar;
+    Toolbar* rightToolbar;
     Canvas* canvas;
     ColorSelector* colorSelector;
     Shape* selectedShape;
@@ -20,14 +22,13 @@ class Application : public bobcat::Application_ {
     void onCanvasDrag(bobcat::Widget* sender, float mx, float my);
     void onCanvasMouseUp(bobcat::Widget* sender, float mx, float my);
     void onToolbarChange(bobcat::Widget* sender);
-
     void onColorSelectorChange(bobcat::Widget* sender);
 
 public:
     Application();
+    virtual ~Application();
 
-
-    friend struct::AppTest;
+    friend struct ::AppTest;
 };
 
 #endif
