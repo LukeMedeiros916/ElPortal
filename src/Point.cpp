@@ -57,3 +57,4 @@ float Point::getB() const {
 int Point::getSize() const {
     return size;
 }
+// Test Coment
