@@ -3,7 +3,7 @@
 #include <FL/Fl.H>
 #include <cmath>
 #include <algorithm>
-
+#include <iostream>
 
 void ColorSelector::hsvToRgb(float h, float s, float v, float& r, float& g, float& b) {
      r = v; g = v; b = v;
@@ -29,18 +29,16 @@ void ColorSelector::hsvToRgb(float h, float s, float v, float& r, float& g, floa
 Color ColorSelector::getColorAtX(float localX) {
     float saturation = 1.0f;
     float value = 1.0f;
-    float hue = std::max(0.0f, std::min(1.0f, localX / (w() > 0 ? w() : 1)));
+    float hue = std::max(0.0f, std::min(1.0f, localX / (w() > 0 ? static_cast<float>(w()) : 1.0f)));
     float r, g, b;
     hsvToRgb(hue, saturation, value, r, g, b);
     return Color(r, g, b);
 }
 
-
-
 ColorSelector::ColorSelector(int x, int y, int w, int h, const char* label)
     : bobcat::Group(x, y, w, h, label) {
     box(FL_FLAT_BOX);
-    selectorX = w / 2.0f;
+    selectorX = static_cast<float>(w) / 2.0f;
     selectedColor = getColorAtX(selectorX);
     dragging = false;
 }
@@ -55,7 +53,6 @@ void ColorSelector::draw() {
 
     if (damage() & FL_DAMAGE_ALL) {
         fl_push_clip(x(), y(), w(), h());
-
 
         for (int i = 0; i < w(); ++i) {
             Color col = getColorAtX(static_cast<float>(i));
@@ -99,32 +96,40 @@ int ColorSelector::handle(int event) {
         case FL_PUSH:
             if (Fl::event_inside(this)) {
                 dragging = true;
-                selectorX = std::max(0.0f, std::min(static_cast<float>(w()), currentEventX - x()));
-                Color newColor = getColorAtX(selectorX);
-                if (newColor.getR() != selectedColor.getR() ||
-                    newColor.getG() != selectedColor.getG() ||
-                    newColor.getB() != selectedColor.getB())
-                {
-                    selectedColor = newColor;
-                    do_callback();
+                float newSelectorX = std::max(0.0f, std::min(static_cast<float>(w()), currentEventX - x()));
+                if (std::abs(newSelectorX - selectorX) > 1e-6) {
+                    selectorX = newSelectorX;
+                    Color newColor = getColorAtX(selectorX);
+                    if (newColor.getR() != selectedColor.getR() ||
+                        newColor.getG() != selectedColor.getG() ||
+                        newColor.getB() != selectedColor.getB())
+                    {
+                        selectedColor = newColor;
+                        std::cout << "[DEBUG] ColorSelector::handle(FL_PUSH): Color changed. Calling do_callback()." << std::endl;
+                        do_callback();
+                    }
+                    redraw();
                 }
-                redraw();
                 result = 1;
             }
             break;
 
         case FL_DRAG:
             if (dragging) {
-                selectorX = std::max(0.0f, std::min(static_cast<float>(w()), currentEventX - x()));
-                 Color newColor = getColorAtX(selectorX);
-                 if (newColor.getR() != selectedColor.getR() ||
-                    newColor.getG() != selectedColor.getG() ||
-                    newColor.getB() != selectedColor.getB())
-                 {
-                    selectedColor = newColor;
-                    do_callback();
+                float newSelectorX = std::max(0.0f, std::min(static_cast<float>(w()), currentEventX - x()));
+                 if (std::abs(newSelectorX - selectorX) > 1e-6) { // Check if position actually changed
+                    selectorX = newSelectorX;
+                    Color newColor = getColorAtX(selectorX);
+                    if (newColor.getR() != selectedColor.getR() ||
+                        newColor.getG() != selectedColor.getG() ||
+                        newColor.getB() != selectedColor.getB())
+                    {
+                        selectedColor = newColor;
+                        std::cout << "[DEBUG] ColorSelector::handle(FL_DRAG): Color changed. Calling do_callback()." << std::endl;
+                        do_callback();
+                    }
+                    redraw();
                  }
-                redraw();
                 result = 1;
             }
             break;
@@ -143,5 +148,3 @@ int ColorSelector::handle(int event) {
     }
     return result;
 }
-
-// Working as of May 3 | ALso beautified code

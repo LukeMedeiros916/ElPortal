@@ -7,7 +7,7 @@
 #include "ColorSelector.h"
 #include "Scribble.h"
 #include "Shape.h"
-
+#include <FL/Fl_Widget.H>
 
 class Application : public bobcat::Application_ {
     bobcat::Window* window;
@@ -18,11 +18,18 @@ class Application : public bobcat::Application_ {
     Shape* selectedShape;
     Scribble* currentScribble;
 
+    bool isDraggingShape;
+    float lastMouseX;
+    float lastMouseY;
+
     void onCanvasMouseDown(bobcat::Widget* sender, float mx, float my);
     void onCanvasDrag(bobcat::Widget* sender, float mx, float my);
     void onCanvasMouseUp(bobcat::Widget* sender, float mx, float my);
     void onToolbarChange(bobcat::Widget* sender);
-    void onColorSelectorChange(bobcat::Widget* sender);
+
+    void onColorSelectorChange();
+
+    static void staticColorSelectorCallback(Fl_Widget* w, void* data);
 
 public:
     Application();
@@ -32,5 +39,3 @@ public:
 };
 
 #endif
-
-// Working as of May 3 | ALso beautified code

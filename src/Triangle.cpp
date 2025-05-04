@@ -11,13 +11,10 @@ void Triangle::calculateVertices() {
     float vert_offset = height * (2.0f / 3.0f);
     float base_offset = height * (1.0f / 3.0f);
 
-    // Top vertex
     v1x = x;
     v1y = y + vert_offset;
-    // Bottom-left vertex
     v2x = x - half_base;
     v2y = y - base_offset;
-    // Bottom-right vertex
     v3x = x + half_base;
     v3y = y - base_offset;
 }
@@ -71,4 +68,8 @@ void Triangle::resize(float factor) {
     calculateVertices();
 }
 
-// Working as of May 3 | ALso beautified code
+void Triangle::move(float dx, float dy) {
+    x += dx;
+    y += dy;
+    calculateVertices();
+}

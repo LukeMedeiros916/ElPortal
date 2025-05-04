@@ -4,7 +4,6 @@
 #include <cmath>
 #include <algorithm>
 
-
 Circle::Circle() {
     x = 0.0;
     y = 0.0;
@@ -25,7 +24,6 @@ Circle::Circle(float x, float y, float r, float g, float b) {
 
 void Circle::draw() {
     glColor3f(r, g, b);
-
     const int segments = 64;
     const float angle_increment = 2.0f * M_PI / segments;
 
@@ -54,4 +52,7 @@ void Circle::resize(float factor) {
     radius = std::max(minRadius, radius * factor);
 }
 
-// Working as of May 3 | ALso beautified code
+void Circle::move(float dx, float dy) {
+    x += dx;
+    y += dy;
+}

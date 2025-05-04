@@ -10,7 +10,6 @@ Point::Point(float x, float y) : Point() {
     this->y = y;
 }
 
-
 float Point::getX() const {
     return x;
 }
@@ -19,4 +18,10 @@ float Point::getY() const {
     return y;
 }
 
-// Working as of May 3 | ALso beautified code
+void Point::setX(float newX) {
+    this->x = newX;
+}
+
+void Point::setY(float newY) {
+    this->y = newY;
+}

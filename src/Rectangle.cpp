@@ -24,7 +24,6 @@ Rectangle::Rectangle(float x, float y, float r, float g, float b) {
 
 void Rectangle::draw() {
     glColor3f(r, g, b);
-
     float half_width = width / 2.0f;
     float half_height = height / 2.0f;
 
@@ -39,10 +38,8 @@ void Rectangle::draw() {
 bool Rectangle::contains(float mx, float my) {
     float half_width = width / 2.0f;
     float half_height = height / 2.0f;
-
     bool within_x = (mx >= x - half_width) && (mx <= x + half_width);
     bool within_y = (my >= y - half_height) && (my <= y + half_height);
-
     return within_x && within_y;
 }
 
@@ -58,4 +55,7 @@ void Rectangle::resize(float factor) {
     height = std::max(minDimension, height * factor);
 }
 
-// Working as of May 3 | ALso beautified code
+void Rectangle::move(float dx, float dy) {
+    x += dx;
+    y += dy;
+}

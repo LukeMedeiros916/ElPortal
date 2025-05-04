@@ -4,7 +4,6 @@
 #include <vector>
 #include <algorithm>
 
-
 #ifndef M_PI
 #define M_PI 3.14159265358979323846
 #endif
@@ -50,9 +49,8 @@ bool Polygon::contains(float mx, float my) {
         return false;
     }
 
-
     bool all_positive = true;
-    bool all_negative = true;
+    const float tolerance = -1e-6;
 
     for (int i = 0; i < sides; ++i) {
         float x1 = vertices_x[i];
@@ -61,13 +59,11 @@ bool Polygon::contains(float mx, float my) {
         float y2 = vertices_y[(i + 1) % sides];
         float cross_product = (x2 - x1) * (my - y1) - (y2 - y1) * (mx - x1);
 
-        const float tolerance = -1e-6;
         if (cross_product < tolerance) {
             all_positive = false;
             break;
         }
     }
-
     return all_positive;
 }
 
@@ -84,4 +80,8 @@ void Polygon::resize(float factor) {
     calculateVertices();
 }
 
-// Working as of May 3 | ALso beautified code
+void Polygon::move(float dx, float dy) {
+    x += dx;
+    y += dy;
+    calculateVertices();
+}

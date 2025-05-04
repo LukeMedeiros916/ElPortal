@@ -9,12 +9,11 @@ public:
     Point();
     Point(float x, float y);
 
-    
-
     float getX() const;
     float getY() const;
+
+    void setX(float newX);
+    void setY(float newY);
 };
 
 #endif
-
-// Working as of May 3 | ALso beautified code

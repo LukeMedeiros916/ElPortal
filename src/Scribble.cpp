@@ -67,7 +67,6 @@ bool Scribble::contains(float mx, float my) {
         }
 
         float t = ((mx - p1x) * seg_vx + (my - p1y) * seg_vy) / len_sq;
-
         t = std::max(0.0f, std::min(1.0f, t));
 
         float closestX = p1x + t * seg_vx;
@@ -97,4 +96,9 @@ void Scribble::resize(float factor) {
     size = std::max(minSize, static_cast<int>(round(newFloatSize)));
 }
 
-// Working as of May 3 | ALso beautified code
+void Scribble::move(float dx, float dy) {
+    for (Point& point : points) {
+        point.setX(point.getX() + dx);
+        point.setY(point.getY() + dy);
+    }
+}

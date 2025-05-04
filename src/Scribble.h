@@ -19,8 +19,7 @@ public:
     bool contains(float mx, float my) override;
     void setColor(float r, float g, float b) override;
     void resize(float factor) override;
+    void move(float dx, float dy) override;
 };
 
 #endif
-
-// Working as of May 2 // <- Original comment
