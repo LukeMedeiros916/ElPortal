@@ -85,3 +85,4 @@ void Polygon::move(float dx, float dy) {
     y += dy;
     calculateVertices();
 }
+// Used https://codebeautify.org/ to keep code readable and nice

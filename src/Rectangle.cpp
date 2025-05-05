@@ -59,3 +59,4 @@ void Rectangle::move(float dx, float dy) {
     x += dx;
     y += dy;
 }
+// Used https://codebeautify.org/ to keep code readable and nice

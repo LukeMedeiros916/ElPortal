@@ -131,3 +131,4 @@ Toolbar::Toolbar(int x_pos, int y_pos, int w, int h, bool createDefaultButtons /
 }
 
 // Working as of May 3 | ALso beautified code
+// Used https://codebeautify.org/ to keep code readable and nice

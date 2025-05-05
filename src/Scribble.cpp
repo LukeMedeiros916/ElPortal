@@ -102,3 +102,4 @@ void Scribble::move(float dx, float dy) {
         point.setY(point.getY() + dy);
     }
 }
+// Used https://codebeautify.org/ to keep code readable and nice

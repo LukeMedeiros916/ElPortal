@@ -26,3 +26,4 @@ public:
 };
 
 #endif
+// Used https://codebeautify.org/ to keep code readable and nice

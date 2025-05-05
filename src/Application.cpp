@@ -2,6 +2,7 @@
 #include "Enums.h"
 #include "Scribble.h"
 #include "Shape.h"
+// DEBUG TO CONSOLE
 #include <iostream>
 #include <FL/Fl_Widget.H>
 
@@ -26,6 +27,7 @@ void Application::onCanvasMouseDown(bobcat::Widget* sender, float mx, float my) 
             isDraggingShape = true;
             lastMouseX = mx;
             lastMouseY = my;
+            // DEBUG TO CONSOLE
             std::cout << "[DEBUG] MouseDown: Selected a shape. Address: " << selectedShape << std::endl;
         } else {
             if (selectedShape) {
@@ -172,7 +174,6 @@ void Application::staticColorSelectorCallback(Fl_Widget* w, void* data) {
      std::cout << "[DEBUG] Static callback triggered." << std::endl;
      Application* app_instance = static_cast<Application*>(data);
      if (app_instance) {
-         // Call the actual instance member function
          app_instance->onColorSelectorChange();
      } else {
           std::cout << "[DEBUG] Static callback error: User data (app instance) is null!" << std::endl;
@@ -208,7 +209,7 @@ Application::Application() :
     ON_CHANGE(rightToolbar, Application::onToolbarChange);
 
     // Removed: ON_CHANGE(colorSelector, Application::onColorSelectorChange);
-    // Added: Standard FLTK callback registration
+    // Added: Standard FLTK callback registration sine we couldn't get it to work
     colorSelector->callback(staticColorSelectorCallback, this);
 
     std::cout << "[DEBUG] Application: Callbacks registered." << std::endl;
@@ -220,3 +221,5 @@ Application::~Application() {
     delete window;
     std::cout << "[DEBUG] Application destroyed." << std::endl;
 }
+
+// Used https://codebeautify.org/ to keep code readable and nice

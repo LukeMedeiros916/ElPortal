@@ -36,3 +36,4 @@ void Color::setB(float b) {
 }
 
 // Working as of May 3 | ALso beautified code
+// Used https://codebeautify.org/ to keep code readable and nice

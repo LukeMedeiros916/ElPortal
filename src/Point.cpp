@@ -25,3 +25,4 @@ void Point::setX(float newX) {
 void Point::setY(float newY) {
     this->y = newY;
 }
+// Used https://codebeautify.org/ to keep code readable and nice

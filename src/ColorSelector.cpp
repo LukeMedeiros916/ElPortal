@@ -148,3 +148,4 @@ int ColorSelector::handle(int event) {
     }
     return result;
 }
+// Used https://codebeautify.org/ to keep code readable and nice
